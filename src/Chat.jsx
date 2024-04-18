@@ -1,8 +1,16 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./chat.css";
-import { auth, provider } from "./firebase-config";
+import { auth, provider, db } from "./firebase-config";
 import { signInWithPopup } from "firebase/auth";
 import Cookies from "universal-cookie";
+import {
+  addDoc,
+  serverTimestamp,
+  collection,
+  query,
+  onSnapshot,
+  where,
+} from "firebase/firestore";
 
 const cookies = new Cookies();
 
@@ -10,8 +18,22 @@ export default function Chat() {
   const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
   const [room, setRoom] = useState(null);
   const [newMessage, setNewMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  const messagesRef = collection(db, "messages");
 
   const roomInputRef = useRef();
+
+  useEffect(() => {
+    const queryMessages = query(messagesRef, where("room", "==", room));
+    onSnapshot(queryMessages, (snapshot) => {
+      let messages = [];
+      snapshot.forEach((doc) => {
+        messages.push({ ...doc.data(), id: doc.id });
+      });
+      setNewMessage(messages);
+    });
+  });
 
   const signInWithGoogle = async () => {
     try {
@@ -22,10 +44,20 @@ export default function Chat() {
     }
   };
 
-  function handleSumbit(e) {
+  const handleSumbit = async (e) => {
     e.preventDefault();
-    console.log(newMessage);
-  }
+
+    if (newMessage === "") return;
+
+    await addDoc(messagesRef, {
+      text: newMessage,
+      createdAt: serverTimestamp(),
+      user: auth.currentUser.displayName,
+      room,
+    });
+
+    setNewMessage("");
+  };
 
   return (
     <main>
@@ -38,6 +70,9 @@ export default function Chat() {
         <div>
           {room ? (
             <ul>
+              {messages.map((message) => (
+                <h1>{message.text}</h1>
+              ))}
               <li>
                 <span>m1rox</span>
               </li>
@@ -57,6 +92,7 @@ export default function Chat() {
             type="text"
             placeholder="Message"
             onChange={(e) => setNewMessage(e.target.value)}
+            value={newMessage}
           />
           <button className="btn-message">+</button>
         </form>
