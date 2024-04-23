@@ -56,7 +56,8 @@ export default function Chat() {
       room,
     });
 
-    setMessages("");
+    setNewMessage("");
+    setMessages([]);
   };
 
   return (
@@ -71,7 +72,9 @@ export default function Chat() {
           {room ? (
             <ul>
               {messages.map((message) => (
-                <h1>{message.text}</h1>
+                <h1>
+                  {message.user}: {message.text}
+                </h1>
               ))}
               <li>
                 <span>m1rox</span>
