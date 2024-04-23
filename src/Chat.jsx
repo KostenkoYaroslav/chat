@@ -31,7 +31,7 @@ export default function Chat() {
       snapshot.forEach((doc) => {
         messages.push({ ...doc.data(), id: doc.id });
       });
-      setNewMessage(messages);
+      setMessages(messages);
     });
   });
 
@@ -56,7 +56,7 @@ export default function Chat() {
       room,
     });
 
-    setNewMessage("");
+    setMessages("");
   };
 
   return (
