@@ -15,7 +15,7 @@ import {
 const cookies = new Cookies();
 
 export default function Chat() {
-  const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
+  const [isAuth, setIsAuth] = useState(cookies.get("auth-token")); //TODO
   const [room, setRoom] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -72,13 +72,12 @@ export default function Chat() {
           {room ? (
             <ul>
               {messages.map((message) => (
-                <h1>
-                  {message.user}: {message.text}
-                </h1>
+                <li>
+                  <span>
+                    {message.user}: {message.text}
+                  </span>
+                </li>
               ))}
-              <li>
-                <span>m1rox</span>
-              </li>
             </ul>
           ) : (
             <div>
