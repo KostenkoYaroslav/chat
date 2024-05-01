@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./chat.css";
-import { auth, provider, db } from "./firebase-config";
+import { auth, provider, db } from "../firebase-config";
 import { signInWithPopup } from "firebase/auth";
 import Cookies from "universal-cookie";
 import {
